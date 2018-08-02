@@ -3,3 +3,18 @@ $primary: darken(#428bca, 20%);
 
 // the ~ allows you to reference things in node_modules
 @import "~bootstrap/scss/bootstrap";
+
+.custom-control {
+  > label:hover, input:hover {
+    cursor: pointer;
+  }
+}
+
+.list-group-flush {
+  > .list-group-item:first-child {
+      border-top: 0;
+    }
+  > .list-group-item:last-child {
+      border-bottom: 0;
+  }
+}

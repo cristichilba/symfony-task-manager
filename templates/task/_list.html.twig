@@ -1,0 +1,35 @@
+{% for task in tasks %}
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-4">
+                <form class="was-validated">
+                    <div class="custom-control custom-checkbox">
+                        {% if task.status == 'active' %}
+                            <input type="checkbox" class="custom-control-input task-status-toggle" id="customControlValidation{{ task.id }}" required data-taskId = {{ task.id }}>
+                        {% else %}
+                            <input type="checkbox" class="custom-control-input task-status-toggle" id="customControlValidation{{ task.id }}" required checked data-taskId = {{ task.id }}>
+                        {% endif %}
+
+                        <label class="custom-control-label" for="customControlValidation{{ task.id }}">
+                            <small>
+                                {{ task.dueDate ? task.dueDate|date('d M Y') : '' }}
+                            </small>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-8 col-md-6 col-sm-4 col-xs-4 text-truncate"  data-toggle="tooltip" data-placement="top" title="{{ task.name }}">
+                {{ task.name }}
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-4 ml-auto">
+                <a class="btn btn-outline-warning btn-sm" role="button" href="{{ path('task_edit', {'id': task.id}) }}">
+                    <i class="fas fa-cog"></i>
+                </a>
+
+                {{ include('task/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </li>
+{% else %}
+    No records found.
+{% endfor %}

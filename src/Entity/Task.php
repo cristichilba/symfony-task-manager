@@ -31,7 +31,7 @@ class Task
      * @Assert\Type("string")
      * @Assert\Length(
      *      min = 2,
-     *      max = 20,
+     *      max = 100,
      *      minMessage = "Your task must be at least {{ limit }} characters long",
      *      maxMessage = "Your task cannot be longer than {{ limit }} characters"
      * )

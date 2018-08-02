@@ -16,6 +16,10 @@ Encore
     // uncomment for legacy applications that require $/jQuery as a global variable
     .autoProvidejQuery()
 
+    .autoProvideVariables({
+        'window.$': 'jquery'
+    })
+
     // uncomment if you use Sass/SCSS files
     .enableSassLoader()
 ;

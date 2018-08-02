@@ -24,6 +24,6 @@ class DefaultController extends AbstractController
      */
     public function index()
     {
-        return $this->redirectToRoute('task_index', ['max' => 100]);
+        return $this->redirectToRoute('task_index');
     }
 }

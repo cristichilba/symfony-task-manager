@@ -9,6 +9,7 @@ namespace App\Form;
 
 use App\Entity\Task;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,7 +30,12 @@ class TaskType extends AbstractType
             ->add('name')
             ->add('description', TextareaType::class, ['required' => false])
             ->add('category')
-            ->add('status')
+            ->add('status', ChoiceType::class, [
+                'choices' => [
+                    'Completed' => 'inactive',
+                    'Not completed' => 'active',
+                ],
+            ])
             ->add('dueDate', DateType::class, array('widget' => 'single_text'))
         ;
     }

@@ -10,6 +10,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,9 +29,38 @@ class TaskController extends Controller
     {
         $tasks = $this->getDoctrine()
             ->getRepository(Task::class)
-            ->findAll();
+            ->findBy([], ['dueDate' => 'ASC']);
 
-        return $this->render('task/index.html.twig', ['tasks' => $tasks]);
+        $past = array_filter($tasks, function (Task $task) use ($tasks) {
+            $interval = (new \DateTime())->diff($task->getDueDate());
+
+            return ($interval->invert === 1 && $interval->days >= 1);
+        });
+
+        $today = array_filter($tasks, function (Task $task) use ($tasks) {
+            $interval = (new \DateTime())->diff($task->getDueDate());
+
+            return ($interval->days === 0);
+        });
+
+        $thisWeek = array_filter($tasks, function (Task $task) use ($tasks) {
+            $interval = (new \DateTime())->diff($task->getDueDate());
+
+            return ($interval->days > 0 && $interval->days <= 7);
+        });
+
+        $future = array_filter($tasks, function (Task $task) use ($tasks) {
+            $interval = (new \DateTime())->diff($task->getDueDate());
+
+            return ($interval->invert === 0 && $interval->days > 7);
+        });
+
+        return $this->render('task/index.html.twig', [
+            'past' => $past,
+            'today' => $today,
+            'this_week' => $thisWeek,
+            'future' => $future,
+        ]);
     }
 
     /**
@@ -88,7 +118,7 @@ class TaskController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('task_edit', ['id' => $task->getId()]);
+            return $this->redirectToRoute('task_index', ['id' => $task->getId()]);
         }
 
         return $this->render('task/edit.html.twig', [
@@ -98,7 +128,7 @@ class TaskController extends Controller
     }
 
     /**
-     * @Route("/{id}", name="task_delete", methods="DELETE")
+     * @Route("/delete/{id}", name="task_delete", methods="DELETE")
      *
      * @param Request $request
      * @param Task    $task
@@ -114,5 +144,24 @@ class TaskController extends Controller
         }
 
         return $this->redirectToRoute('task_index');
+    }
+
+    /**
+     * @Route("/{id}/status", name="task_status", methods="POST")
+     *
+     * @param Request $request
+     * @param Task    $task
+     *
+     * @return Response
+     */
+    public function toggleStatus(Request $request, Task $task): Response
+    {
+        $value = $request->request->get('value');
+        $status = ($value === 'true') ? 'inactive' : 'active';
+        $task->setStatus($status);
+        $this->getDoctrine()->getManager()->persist($task);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse($status);
     }
 }

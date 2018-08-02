@@ -7,20 +7,24 @@
         <title>{% block title %}Hello, World!{% endblock %}</title>
 
         <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+        <nav class="navbar navbar-dark bg-dark mb-5">
+            <a href="{{ path('task_index') }}" class="navbar-brand mb-0 h1">Taskr</a>
+        </nav>
         <div class="container">
-            <h1>Hello, world!</h1>
-            <hr>
             <div class="row">
-                <div class="offset-xs-2 offset-sm-2 offset-md-2 offset-lg-2 col-xs-8 col-sm-8-col-mg-8 col-lg-8 center-block">
+                <div class="offset-1 col-10 center-block">
                     {% block body %}{% endblock %}
                 </div>
             </div>
         </div>
 
         <script src="{{ asset('build/app.js') }}"></script>
+
         {% block javascripts %}{% endblock %}
     </body>
 </html>
